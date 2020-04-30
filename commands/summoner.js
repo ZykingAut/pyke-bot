@@ -1,6 +1,7 @@
 const { MessageEmbed } = require('discord.js');
 const config = require('../config');
 const LeagueJS = require('leaguejs');
+const querystring = require('querystring');
 
 
 const leagueJs = new LeagueJS(config.riotToken, {
@@ -33,12 +34,37 @@ function sendErrorMessage(msg, statusCode) {
     }
 }
 
-async function createEmbed(msg, rank, summoner) {
-    const embed = new MessageEmbed()
-        .setTitle(summoner.name)
-        .setColor('#3587ff')
-        .setThumbnail(`http://ddragon.leagueoflegends.com/cdn/10.8.1/img/profileicon/${summoner.profileIconId}.png`);
-    msg.channel.send(embed);
+function createEmbed(msg, flexRank, soloRank, summoner) {
+    const query = querystring.stringify({ userName: summoner.name });
+    if (!flexRank) {
+        const embed = new MessageEmbed()
+            .setTitle(summoner.name)
+            .setColor('#3587ff')
+            .setThumbnail(`http://ddragon.leagueoflegends.com/cdn/10.8.1/img/profileicon/${summoner.profileIconId}.png`)
+            .setURL(`https://op.gg/summoner/${query}`)
+            .addFields(
+                { name: 'Level', value: summoner.summonerLevel },
+                { name: 'Solo/Duo', value: `${soloRank.tier} ${soloRank.rank}`, inline: true },
+                { name: 'Flex', value: 'Unranked', inline: true }
+            );
+        console.log('Sending Embed...');
+        console.log('Command finished!');
+        return msg.channel.send(embed);
+    } else {
+        const embed = new MessageEmbed()
+            .setTitle(summoner.name)
+            .setColor('#3587ff')
+            .setThumbnail(`http://ddragon.leagueoflegends.com/cdn/10.8.1/img/profileicon/${summoner.profileIconId}.png`)
+            .setURL(`https://op.gg/summoner/${query}`)
+            .addFields(
+                { name: 'Level', value: summoner.summonerLevel },
+                { name: 'Solo/Duo', value: `${soloRank.tier} ${flexRank.rank}`, inline: true },
+                { name: 'Flex', value: `${flexRank.tier} ${flexRank.rank}`, inline: true }
+            );
+        console.log('Sending Embed...');
+        console.log('Command finished!');
+        return msg.channel.send(embed);
+    }
 }
 
 function getRankById(msg, id, summoner) {
@@ -46,9 +72,18 @@ function getRankById(msg, id, summoner) {
         .gettingEntriesForSummonerId(id)
         .then(rank => {
             'use strict';
-            if (rank) {
-                console.log(rank);
-                createEmbed(msg, rank, summoner);
+            if (rank.length !== 0) {
+                if (rank.length < 2) {
+                    console.log('Creating Embed...');
+                    return createEmbed(msg, undefined, rank[0], summoner);
+                } else {
+                    console.log('Creating Embed...');
+                    return createEmbed(msg, rank[0], rank[1], summoner);
+                }
+            } else {
+                console.log('Stopping Creating Embed...');
+                console.log('Command finished!');
+                return msg.reply('this player isn\'t ranked yet.');
             }
         })
         .catch(err => {
@@ -65,6 +100,7 @@ function getSummonerByName(msg, summonerName) {
         .then(summoner => {
             'use strict';
             console.log(summoner);
+            console.log('Fetching ranked stats...')
             getRankById(msg, summoner.id, summoner);
         })
         .catch(err => {
