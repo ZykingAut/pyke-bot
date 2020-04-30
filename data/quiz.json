@@ -1,10 +1,74 @@
 [
   {
-    "question": "What colour is the sky?",
-    "answers": ["blue"]
+    "question": "Aqua?",
+    "answers": ["useless", "garbage", "trash"]
   },
   {
-    "question": "How many letters are there in the alphabet?",
-    "answers": ["26", "twenty-six", "twenty six", "twentysix"]
+    "question": "What is the object that opposing players must destroy in order to win at \"League of Legends\"?",
+    "answers": ["nexus"]
+  },
+  {
+    "question": "What is the average amount of time a player of \"Fortnite\" spends enjoying the game weekly?",
+    "answers": ["6 hours", "10 hours", "7 hours", "8 hours", "9 hours", "6-10 hours"]
+  },
+  {
+    "question": "What is the name of the woman Mario is attempting to save from the giant ape in the original Donkey Kong?",
+    "answers": ["pauline"]
+  },
+  {
+    "question": "The original street design for Liberty City in \"Grand Theft Auto\" was based on which real-life metropolis?",
+    "answers": ["New York City"]
+  },
+  {
+    "question": "What are the name of the cartoon-like interludes that interrupt videogame play to narrate the story?",
+    "answers": ["cutscenes"]
+  },
+  {
+    "question": "A pickaxe is a basic, commonly-used tool in which videogame?",
+    "answers": ["minecraft"]
+  },
+  {
+    "question": "What is the name of the racing series that is a spinoff of \"Super Mario Brothers\"?",
+    "answers": ["mario kart", "mario-kart"]
+  },
+  {
+    "question": "The classic arcade game \"Pong\" was manufactured by which company?",
+    "answers": ["atari"]
+  },
+  {
+    "question": "What are the professions of Mario and his brother Luigi?",
+    "answers": ["plumbers"]
+  },
+  {
+    "question": "What does Mario jump on when he completes a level?",
+    "answers": ["a flag pole", "a pole", "a flag", "flag", "pole", "flag pole"]
+  },
+  {
+    "question": "How many players can compete against each other simultaneously in a \"Fortnite Battle Royale\"?",
+    "answers": ["100", "hundred", "one-hundred"]
+  },
+  {
+    "question": "SK Telecom T1 are accomplished eGamers associated with which game?",
+    "answers": ["league of legends", "league"]
+  },
+  {
+    "question": "What is the name of the final course in all \"Mario Kart\" videogames?",
+    "answers": ["rainbow road", "rainbow"]
+  },
+  {
+    "questions": "Which item made Mario invincible in \"Super Mario Bros.\"?",
+    "answers": ["starman", "star"]
+  },
+  {
+    "questions": "What is the name of the circular object that is used to collect Pokémon?",
+    "answers": ["pokeball", "poke-ball", "poke ball"]
+  },
+  {
+    "questions": "\"Notch\" is the world-famous designer of which videogame?",
+    "answers": ["Minecraft"]
+  },
+  {
+    "questions": "The word \"Pokémon\" is generally understood to be a translation of which phrase?",
+    "answers": ["poket monsters", "poket monster", "poket-monsters", "poket-monster"]
   }
 ]
