@@ -31,5 +31,5 @@ jobs:
       with:
         app-name: 'zybot'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_9879eb2c1780493eb33fcb6fb94f2118 }}
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_fc034d95361f48799f557e791d4b4528 }}
         package: .
