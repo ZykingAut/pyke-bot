@@ -58,7 +58,7 @@ function createEmbed(msg, flexRank, soloRank, summoner) {
             .setURL(`https://op.gg/summoner/${query}`)
             .addFields(
                 { name: 'Level', value: summoner.summonerLevel },
-                { name: 'Solo/Duo', value: `${soloRank.tier} ${flexRank.rank}`, inline: true },
+                { name: 'Solo/Duo', value: `${soloRank.tier} ${soloRank.rank}`, inline: true },
                 { name: 'Flex', value: `${flexRank.tier} ${flexRank.rank}`, inline: true }
             );
         console.log('Sending Embed...');
@@ -73,13 +73,8 @@ function getRankById(msg, id, summoner) {
         .then(rank => {
             'use strict';
             if (rank.length !== 0) {
-                if (rank.length < 2) {
-                    console.log('Creating Embed...');
-                    return createEmbed(msg, undefined, rank[0], summoner);
-                } else {
-                    console.log('Creating Embed...');
-                    return createEmbed(msg, rank[0], rank[1], summoner);
-                }
+                console.log(rank);
+                createEmbed(msg, undefined, rank[0], summoner);
             } else {
                 console.log('Stopping Creating Embed...');
                 console.log('Command finished!');
