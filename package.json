@@ -22,7 +22,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "start": "node .",
+    "start": "node app.js",
     "lint": "eslint ."
   },
   "author": "Zyking",
