@@ -9,27 +9,35 @@ const leagueJs = new LeagueJS(config.riotToken, {
         limits: {
             'allowBursts': false,
             'numMaxRetries': 3,
-            'intervalRetryMS': 1500,
+            'intervalRetryMS': 1000,
         },
         caching: {
-            isEnabled: false,
+            isEnabled: true,
+            defaults: {stdTLL: 120},
+            checkperiod: 600,
+            errorOnMissing: false,
+            useclonse: true,
         }});
-
 
 
 function sendErrorMessage(msg, statusCode) {
     if (statusCode == '400') {
+        console.log('')
         return msg.channel.send('There was an unexpected error!');
     }
     if (statusCode == '401') {
+        console.log('This data is unavailable.')
         return msg.channel.send('The bot can\' access that data');
     }
     if (statusCode == '403') {
+        console.log('No access rights for this data.')
         return msg.channel.send('The bot hasn\'t got permission to access that data!');
     }
     if (statusCode == '404') {
+        console.log('Summoner doesnt exist.');
         return msg.channel.send('This summoner does not exist!');
     } else {
+        console.log('Problems with RIOT servers.');
         return msg.channel.send('There was an unexpected error!');
     }
 }
