@@ -3,7 +3,7 @@ const LeagueJS = require('leaguejs');
 const querystring = require('querystring');
 
 
-const leagueJs = new LeagueJS(process.env.riotToken, {
+const leagueJs = new LeagueJS(process.env.riottoken, {
         PLATFORM_ID: 'euw1',
         limits: {
             'allowBursts': false,
