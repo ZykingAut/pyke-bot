@@ -1,10 +1,9 @@
 const { MessageEmbed } = require('discord.js');
-const config = require('../config');
 const LeagueJS = require('leaguejs');
 const querystring = require('querystring');
 
 
-const leagueJs = new LeagueJS(config.riotToken, {
+const leagueJs = new LeagueJS(process.env.riotToken, {
         PLATFORM_ID: 'euw1',
         limits: {
             'allowBursts': false,
