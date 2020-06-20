@@ -96,20 +96,19 @@ function getRankById(msg, id, summoner) {
 }
 
 
-function getSummonerByName(msg, summonerName) {
+function getSummonerByName(summonerName) {
     leagueJs.Summoner
         .gettingByName(summonerName)
         .then(summoner => {
             'use strict';
-            console.log(summoner);
-            console.log('Fetching ranked stats...')
-            getRankById(msg, summoner.id, summoner);
+            console.log('Fetching ranked stats...');
+            return summoner;
         })
         .catch(err => {
             'use strict';
             console.log(err);
-            sendErrorMessage(msg, err.statusCode);
-        })
+            sendErrorMessage(err.statusCode);
+        });
 }
 
 
@@ -118,7 +117,15 @@ module.exports = {
     description: 'Command to display data for a specific summoner',
     args: true,
     cooldown: 3,
-    execute(msg, args) {
-        getSummonerByName(msg, args.join(' '));
+    async execute(msg, args) {
+        try {
+            summoner = await getSummonerByName(args.join(' '));
+            console.log(summoner);
+        } catch(e) {
+            console.log(e);
+        } finally {
+            console.log('Information Fetched');
+        }
+        console.log(summoner);
     }
 };
