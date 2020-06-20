@@ -1,6 +1,5 @@
 const fs = require('fs');
 const discord = require('discord.js');
-const config = require('./config.json');
 const { Op } = require('sequelize');
 
 
@@ -17,14 +16,13 @@ for (const file of commandFiles) {
 }
 
 
-
 client.once('ready', async () => {
     console.log(`Logged in as ${client.user.tag}!`);
 });
 
 
 client.on('message', msg => {
-    const prefix = config.prefix;
+    const prefix = process.env.prefix;
 
     if (!msg.content.startsWith(prefix)) return;
 
@@ -79,4 +77,4 @@ client.on('message', msg => {
     }
 });
 
-client.login(config.discordToken);
+client.login(process.env.discordToken);
