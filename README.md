@@ -1,3 +1,1 @@
 # Kassadin Bot
-
-HIHIIHIHIHIH

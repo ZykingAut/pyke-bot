@@ -8,19 +8,19 @@ const client = new discord.Client();
 client.commands = new discord.Collection();
 const cooldowns = new discord.Collection();
 
-
+// Command Handler
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 for (const file of commandFiles) {
     const command = require(`./commands/${file}`);
     client.commands.set(command.name, command);
 }
 
-
+// On Startup
 client.once('ready', async () => {
     console.log(`Logged in as ${client.user.tag}!`);
 });
 
-
+// Message Listener
 client.on('message', msg => {
     const prefix = process.env.prefix;
 
@@ -77,4 +77,5 @@ client.on('message', msg => {
     }
 });
 
+// Starting Bot
 client.login(process.env.discordToken);
