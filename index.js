@@ -52,5 +52,4 @@ http.createServer((req, res) => {
 
 	res.write(content);
 	res.end();
-})
-	.listen(port);
+}) .listen(port);
