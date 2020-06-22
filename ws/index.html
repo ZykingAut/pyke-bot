@@ -6,32 +6,33 @@
 <body>
 	<div id="info">
 		Hoi!
-    </div>
-    <a id="login" style="display: none;" href="https://discord.com/api/oauth2/authorize?client_id=723919899788836884&redirect_uri=https%3A%2F%2Fkassadinbot-beta.herokuapp.com%2F&response_type=code&scope=identify">Identify yourself</a>
-    <script>
-        window.onload = () => {
-            const fragment = new URLSearchParams(window.location.hash.slice(1));
+	</div>
+	<a id="login" style="display: none;" href="your oauth2 url here">Identify Yourself</a>
+	<script>
+		window.onload = () => {
+			const fragment = new URLSearchParams(window.location.hash.slice(1));
 
-            if (fragment.has("access_token")) {
-                const accessToken = fragment.get("access_token");
-                const tokenType = fragment.get("token_type");
+			if (fragment.has("access_token")) {
+				const accessToken = fragment.get("access_token");
+				const tokenType = fragment.get("token_type");
 
-                fetch('https://discordapp.com/api/users/@me', {
-                    headers: {
-                        authorization: `${tokenType} ${accessToken}`
-                    }
-                })
-                    .then(res => res.json())
-                    .then(response => {
-                        const { username, discriminator } = response;
-                        document.getElementById('info').innerText += ` ${username}#${discriminator}`;
-                    })
-                    .catch(console.error);
-            }
-            else {
-                document.getElementById('login').style.display = 'block';
-            }
-        }
-    </script>
+				fetch('https://discordapp.com/api/users/@me', {
+					headers: {
+						authorization: `${tokenType} ${accessToken}`
+					}
+				})
+					.then(res => res.json())
+					.then(response => {
+						const { username, discriminator } = response;
+						document.getElementById('info').innerText += ` ${username}#${discriminator}`;
+					})
+					.catch(console.error);
+
+			}
+			else {
+				document.getElementById('login').style.display = 'block';
+			}
+		}
+	</script>
 </body>
 </html>
