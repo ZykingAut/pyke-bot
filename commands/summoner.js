@@ -1,6 +1,7 @@
 const { MessageEmbed } = require('discord.js');
 const LeagueJS = require('leaguejs');
 const querystring = require('querystring');
+const fetch = require('node-fetch');
 
 
 const leagueJs = new LeagueJS(process.env.riottoken, {
@@ -97,7 +98,7 @@ function getRankById(msg, id, summoner) {
 
 
 function getSummonerByName(summonerName) {
-    leagueJs.Summoner
+     leagueJs.Summoner
         .gettingByName(summonerName)
         .then(summoner => {
             'use strict';
@@ -119,13 +120,10 @@ module.exports = {
     cooldown: 3,
     async execute(msg, args) {
         try {
-            summoner = await getSummonerByName(args.join(' '));
+            let summoner = await getSummonerByName(args.join(' '));
             console.log(summoner);
-        } catch(e) {
-            console.log(e);
-        } finally {
-            console.log('Information Fetched');
+        } catch (e) {
+            console.log('Error:', e);
         }
-        console.log(summoner);
     }
-};
+}

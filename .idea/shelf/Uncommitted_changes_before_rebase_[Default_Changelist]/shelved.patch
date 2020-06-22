@@ -1,0 +1,88 @@
+Index: config.json
+===================================================================
+--- config.json	(revision 3565da871d73bd6c438425a768f93654650c2498)
++++ config.json	(revision 3565da871d73bd6c438425a768f93654650c2498)
+@@ -1,6 +0,0 @@
+-{
+-  "prefix": "+",
+-  "discordToken": "NzA1NjA5MTc2MTMwMzg3OTk5.XquL1g.7XrYPA7w0VTbfY_4p9lZm2uUl4A",
+-  "riotToken": "RGAPI-75d60120-adb4-46bd-b458-baf71c6e4f57",
+-  "patchVersion": "10.12"
+-}
+\ No newline at end of file
+Index: app.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>const fs = require('fs');\r\nconst discord = require('discord.js');\r\nconst config = require('./config.json');\r\nconst { Op } = require('sequelize');\r\n\r\n\r\n//Collections\r\nconst client = new discord.Client();\r\nclient.commands = new discord.Collection();\r\nconst cooldowns = new discord.Collection();\r\n\r\n\r\nconst commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));\r\nfor (const file of commandFiles) {\r\n    const command = require(`./commands/${file}`);\r\n    client.commands.set(command.name, command);\r\n}\r\n\r\n\r\n\r\nclient.once('ready', async () => {\r\n    console.log(`Logged in as ${client.user.tag}!`);\r\n});\r\n\r\n\r\nclient.on('message', msg => {\r\n    const prefix = config.prefix;\r\n\r\n    if (!msg.content.startsWith(prefix)) return;\r\n\r\n    const args = msg.content.slice(prefix.length).split(/ +/);\r\n    const commandName = args.shift().toLowerCase();\r\n\r\n    const command = client.commands.get(commandName) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));\r\n\r\n    if (!command) return;\r\n\r\n    if (command.args && !args.length) {\r\n        let reply = `You didn't provide any arguments, ${msg.author}!`;\r\n\r\n        if (command.usage) {\r\n            reply += `\\nThe proper usage would be: \\'${prefix}${command.name} ${command.usage}\\'`;\r\n        }\r\n\r\n        return msg.channel.send(reply);\r\n    }\r\n\r\n    if (command.guildOnly && msg.channel.type !== 'text') {\r\n        return msg.reply('I can\\'t execute that command inside DMs!')\r\n    }\r\n\r\n\r\n    if (!cooldowns.has(command.name)) {\r\n        cooldowns.set(command.name, new discord.Collection());\r\n    }\r\n\r\n    const now = Date.now();\r\n    const timestamps = cooldowns.get(command.name);\r\n    const cooldownAmount = (command.cooldown || 3) * 1000;\r\n\r\n    if (timestamps.has(msg.author.id)) {\r\n        const expirationTime = timestamps.get(msg.author.id) + cooldownAmount;\r\n\r\n        if (now < expirationTime) {\r\n            const timeLeft = (expirationTime - now) / 1000;\r\n            return msg.reply(`please wait ${timeLeft.toFixed(1)} more second(s) before reusing the \\`${command.name}\\` command.`);\r\n        }\r\n\r\n    }\r\n    timestamps.set(msg.author.id, now);\r\n    setTimeout(() => timestamps.delete(msg.author.id), cooldownAmount);\r\n\r\n\r\n    try {\r\n        command.execute(msg, args, client, Op);\r\n    } catch (error) {\r\n        console.log(error);\r\n        msg.reply('there was an error trying to execute that command!');\r\n    }\r\n});\r\n\r\nclient.login(config.discordToken);
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app.js	(revision 3565da871d73bd6c438425a768f93654650c2498)
++++ app.js	(date 1592649381600)
+@@ -1,6 +1,5 @@
+ const fs = require('fs');
+ const discord = require('discord.js');
+-const config = require('./config.json');
+ const { Op } = require('sequelize');
+ 
+ 
+@@ -17,14 +16,13 @@
+ }
+ 
+ 
+-
+ client.once('ready', async () => {
+     console.log(`Logged in as ${client.user.tag}!`);
+ });
+ 
+ 
+ client.on('message', msg => {
+-    const prefix = config.prefix;
++    const prefix = process.env.prefix;
+ 
+     if (!msg.content.startsWith(prefix)) return;
+ 
+@@ -79,4 +77,4 @@
+     }
+ });
+ 
+-client.login(config.discordToken);
+\ No newline at end of file
++client.login(process.env.discordToken);
+\ No newline at end of file
+Index: commands/help.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>const { prefix } = require('../config.json');\r\n\r\nmodule.exports = {\r\n    name: 'help',\r\n    description: 'List all of my commands or info about a specific command.',\r\n    aliases: ['commands'],\r\n    usage: '<command name>',\r\n    cooldown: 5,\r\n    execute(msg, args) {\r\n        const data = [];\r\n        const { commands } = msg.client;\r\n\r\n        if (!args.length) {\r\n            data.push('**Here\\'s a list of all my commands:**');\r\n            data.push(commands.map(command => command.name).join(', \\n'));\r\n            data.push(`\\nYou can send \\`${prefix}help [command name]\\` to get info on a specific command!`);\r\n\r\n            return msg.author.send(data, {split: true})\r\n                .then(() => {\r\n                    if (msg.channel.type === 'dm') return;\r\n                    msg.reply('I\\'ve sent you a DM with all my commands!');\r\n                })\r\n                .catch(error => {\r\n                    console.error(`Could not send help DM to ${msg.author.tag}.\\n`, error);\r\n                    msg.reply('it seems like I can\\'t DM you! Do you have DMs disabled?');\r\n                });\r\n        }\r\n        const name = args[0].toLowerCase();\r\n        const command = commands.get(name) || commands.find(c => c.aliases && c.aliases.includes(name));\r\n\r\n        if (!command) {\r\n            return msg.reply('that\\'s not a valid command!');\r\n        }\r\n\r\n        data.push(`**Name:** ${command.name}`);\r\n\r\n        if (command.aliases) data.push(`**Aliases:** ${command.aliases.join(', ')}`);\r\n        if (command.description) data.push(`**Description:** ${command.description}`);\r\n        if (command.usage) data.push(`**Usage:** ${prefix}${command.name} ${command.usage}`);\r\n\r\n        data.push(`**Cooldown:** ${command.cooldown || 3} second(s)`);\r\n\r\n        msg.channel.send(data, { split: true });\r\n\r\n    }\r\n};
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- commands/help.js	(revision 3565da871d73bd6c438425a768f93654650c2498)
++++ commands/help.js	(date 1592649413760)
+@@ -1,4 +1,4 @@
+-const { prefix } = require('../config.json');
++const prefix = process.env.prefix
+ 
+ module.exports = {
+     name: 'help',
+Index: commands/summoner.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>const { MessageEmbed } = require('discord.js');\r\nconst config = require('../config');\r\nconst LeagueJS = require('leaguejs');\r\nconst querystring = require('querystring');\r\n\r\n\r\nconst leagueJs = new LeagueJS(config.riotToken, {\r\n        PLATFORM_ID: 'euw1',\r\n        limits: {\r\n            'allowBursts': false,\r\n            'numMaxRetries': 3,\r\n            'intervalRetryMS': 1000,\r\n        },\r\n        caching: {\r\n            isEnabled: true,\r\n            defaults: {stdTLL: 120},\r\n            checkperiod: 600,\r\n            errorOnMissing: false,\r\n            useclonse: true,\r\n        }});\r\n\r\n\r\nfunction sendErrorMessage(msg, statusCode) {\r\n    if (statusCode == '400') {\r\n        console.log('')\r\n        return msg.channel.send('There was an unexpected error!');\r\n    }\r\n    if (statusCode == '401') {\r\n        console.log('This data is unavailable.')\r\n        return msg.channel.send('The bot can\\' access that data');\r\n    }\r\n    if (statusCode == '403') {\r\n        console.log('No access rights for this data.')\r\n        return msg.channel.send('The bot hasn\\'t got permission to access that data!');\r\n    }\r\n    if (statusCode == '404') {\r\n        console.log('Summoner doesnt exist.');\r\n        return msg.channel.send('This summoner does not exist!');\r\n    } else {\r\n        console.log('Problems with RIOT servers.');\r\n        return msg.channel.send('There was an unexpected error!');\r\n    }\r\n}\r\n\r\nfunction createEmbed(msg, flexRank, soloRank, summoner) {\r\n    const query = querystring.stringify({ userName: summoner.name });\r\n    if (!flexRank) {\r\n        const embed = new MessageEmbed()\r\n            .setTitle(summoner.name)\r\n            .setColor('#3587ff')\r\n            .setThumbnail(`http://ddragon.leagueoflegends.com/cdn/10.8.1/img/profileicon/${summoner.profileIconId}.png`)\r\n            .setURL(`https://op.gg/summoner/${query}`)\r\n            .addFields(\r\n                { name: 'Level', value: summoner.summonerLevel },\r\n                { name: 'Solo/Duo', value: `${soloRank.tier} ${soloRank.rank}`, inline: true },\r\n                { name: 'Flex', value: 'Unranked', inline: true }\r\n            );\r\n        console.log('Sending Embed...');\r\n        console.log('Command finished!');\r\n        return msg.channel.send(embed);\r\n    } else {\r\n        const embed = new MessageEmbed()\r\n            .setTitle(summoner.name)\r\n            .setColor('#3587ff')\r\n            .setThumbnail(`http://ddragon.leagueoflegends.com/cdn/10.8.1/img/profileicon/${summoner.profileIconId}.png`)\r\n            .setURL(`https://op.gg/summoner/${query}`)\r\n            .addFields(\r\n                { name: 'Level', value: summoner.summonerLevel },\r\n                { name: 'Solo/Duo', value: `${soloRank.tier} ${soloRank.rank}`, inline: true },\r\n                { name: 'Flex', value: `${flexRank.tier} ${flexRank.rank}`, inline: true }\r\n            );\r\n        console.log('Sending Embed...');\r\n        console.log('Command finished!');\r\n        return msg.channel.send(embed);\r\n    }\r\n}\r\n\r\nfunction getRankById(msg, id, summoner) {\r\n    leagueJs.League\r\n        .gettingEntriesForSummonerId(id)\r\n        .then(rank => {\r\n            'use strict';\r\n            if (rank.length !== 0) {\r\n                console.log(rank);\r\n                createEmbed(msg, undefined, rank[0], summoner);\r\n            } else {\r\n                console.log('Stopping Creating Embed...');\r\n                console.log('Command finished!');\r\n                return msg.reply('this player isn\\'t ranked yet.');\r\n            }\r\n        })\r\n        .catch(err => {\r\n            'use strict';\r\n            console.log(err);\r\n            sendErrorMessage(msg, err.statusCode);\r\n        })\r\n}\r\n\r\n\r\nfunction getSummonerByName(msg, summonerName) {\r\n    leagueJs.Summoner\r\n        .gettingByName(summonerName)\r\n        .then(summoner => {\r\n            'use strict';\r\n            console.log(summoner);\r\n            console.log('Fetching ranked stats...')\r\n            getRankById(msg, summoner.id, summoner);\r\n        })\r\n        .catch(err => {\r\n            'use strict';\r\n            console.log(err);\r\n            sendErrorMessage(msg, err.statusCode);\r\n        })\r\n}\r\n\r\n\r\nmodule.exports = {\r\n    name: 'summoner',\r\n    description: 'Command to display data for a specific summoner',\r\n    args: true,\r\n    cooldown: 3,\r\n    execute(msg, args) {\r\n        getSummonerByName(msg, args.join(' '));\r\n    }\r\n};
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- commands/summoner.js	(revision 3565da871d73bd6c438425a768f93654650c2498)
++++ commands/summoner.js	(date 1592649443634)
+@@ -1,10 +1,9 @@
+ const { MessageEmbed } = require('discord.js');
+-const config = require('../config');
+ const LeagueJS = require('leaguejs');
+ const querystring = require('querystring');
+ 
+ 
+-const leagueJs = new LeagueJS(config.riotToken, {
++const leagueJs = new LeagueJS(process.env.riottoken, {
+         PLATFORM_ID: 'euw1',
+         limits: {
+             'allowBursts': false,
