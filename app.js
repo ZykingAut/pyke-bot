@@ -78,4 +78,4 @@ client.on('message', msg => {
 });
 
 // Starting Bot
-client.login(process.env.discordToken);
+client.login(process.env.discordtoken);
