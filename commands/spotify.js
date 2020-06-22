@@ -26,7 +26,7 @@ module.exports = {
                     {name: 'Listen to Track:', value: trackURL, inline: false}
                 );
             msg.channel.send(embed);
-        } else if (msg.mentions == undefined) {
+        } else {
             msg.channel.send('This user is not listening to Spotify!');
         }
     }
