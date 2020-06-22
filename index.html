@@ -7,7 +7,7 @@
 <div id="info">
 	Hoi!
 </div>
-<a id="login" style="display: none;" href="https://discord.com/api/oauth2/authorize?client_id=723919899788836884&redirect_uri=https%3A%2F%2Fkassadinbot-beta.herokuapp.com%2F&response_type=code&scope=identify">Identify Yourself</a>
+<a id="login" style="display: none;" href="https://discord.com/api/oauth2/authorize?client_id=723919899788836884&redirect_uri=https%3A%2F%2Fkassadinbot-beta.herokuapp.com%2F%3Fcode%3DBAMSJUL6tuzVFbTyv4IEHUdhwgbhuA%26state%3DXFoidzQ2cmtYMCdPVVRRKXJIIzdEW11b&response_type=code&scope=identify">Identify Yourself</a>
 <script>
 	function generateRandomString() {
 		const rand = Math.floor(Math.random() * 10);
@@ -45,7 +45,6 @@
 						document.getElementById('info').innerText += ` ${username}#${discriminator}`;
 					})
 					.catch(console.error);
-
 		}
 		else {
 			const randStr = generateRandomString();
