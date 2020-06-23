@@ -6,9 +6,9 @@ http.createServer((req, res) => {
 	let responseCode = 404;
 	let content = '404 Error';
 
-	if (req.url === '/') {
+	if (req.url === 'https://kassadinbot-beta.herokuapp.com/') {
 		responseCode = 200;
-		content = fs.readFileSync('.././index.html');
+		content = fs.readFileSync('./index.html');
 	}
 
 	res.writeHead(responseCode, {
