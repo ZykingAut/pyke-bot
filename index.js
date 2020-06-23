@@ -4,7 +4,7 @@ const url = require('url');
 const fetch = require('node-fetch');
 const FormData = require('form-data');
 
-const port = 53134;
+const port = process.env.PORT;
 
 http.createServer((req, res) => {
 	let responseCode = 404;
