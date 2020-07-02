@@ -6,7 +6,18 @@ module.exports = {
             return msg.channel.send('You need to tag two people to calculate their love!');
         } else {
             const love = Math.floor(Math.random() * 101);
-            return msg.channel.send(`The love between ${msg.mentions.users[0].nickname} and ${msg.mentions.users[1].nickname} is ${love}%`);
+            const loversArray = msg.mentions.users.array();
+            msg.channel.send(`The love between ${loversArray[0].username} and ${loversArray[1].username} is ${love}%!`).then(react =>{
+                if (love < 25) {
+                    react.react('😒')
+                } else if (love > 25 && love < 50) {
+                    react.react('😏')
+                } else if (love > 50 && love < 75) {
+                    react.react('😚')
+                } else {
+                    react.react('😍')
+                }
+            });
         }
     }
 };
