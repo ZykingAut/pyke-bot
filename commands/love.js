@@ -7,15 +7,15 @@ module.exports = {
         } else {
             const love = Math.floor(Math.random() * 101);
             const loversArray = msg.mentions.users.array();
-            msg.channel.send(`The love between ${loversArray[0].username} and ${loversArray[1].username} is ${love}%!`).then(react =>{
+            msg.channel.send(`The love between ${loversArray[0].username} and ${loversArray[1].username} is ${love}%!`).then(botMsg =>{
                 if (love < 25) {
-                    react.react('😒')
+                    botMsg.react('😒');
                 } else if (love > 25 && love < 50) {
-                    react.react('😏')
+                    botMsg.react('😏');
                 } else if (love > 50 && love < 75) {
-                    react.react('😚')
+                    botMsg.react('😚');
                 } else {
-                    react.react('😍')
+                    botMsg.react('😍');
                 }
             });
         }
