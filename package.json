@@ -20,7 +20,6 @@
     "node-fetch": "^2.6.0",
     "save": "^2.4.0",
     "sequelize": "^5.21.6",
-    "spotify-web-api-js": "^1.4.0",
     "spotify-web-api-node": "^4.0.0",
     "sqlite3": "^4.1.1"
   },
