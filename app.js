@@ -19,7 +19,7 @@ for (const file of commandFiles) {
 client.once('ready', async () => {
     console.log(`Logged in as ${client.user.tag}!`);
     client.user.setStatus('online');
-    client.user.setActivity('Himself being tested!', { type: 'WATCHING' });
+    client.user.setActivity('Himself being tested!', { type: 'WATCHING', url: 'https://www.youtube.com' });
 });
 
 // Message Listener
