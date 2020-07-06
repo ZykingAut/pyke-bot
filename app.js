@@ -19,7 +19,7 @@ for (const file of commandFiles) {
 client.once('ready', async () => {
     console.log(`Logged in as ${client.user.tag}!`);
     client.user.setStatus('online');
-    client.user.setActivity('Zyking Inting', { type: 'PLAYING' });
+    client.user.setActivity('Himself being tested!', { type: 'WATCHING' });
 });
 
 // Message Listener
@@ -28,7 +28,7 @@ client.on('message', msg => {
 
     if (!msg.content.startsWith(prefix)) return;
 
-    const args = msg.content.slice(prefix.length).split(/ +/);
+    const args = msg.content.slice(prefix.length).split(/ -/);
     const commandName = args.shift().toLowerCase();
 
     const command = client.commands.get(commandName) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
