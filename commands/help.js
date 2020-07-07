@@ -1,3 +1,5 @@
+const discord = require('discord.js');
+
 module.exports = {
     name: 'help',
     description: 'List all of my commands or info about a specific command.',
@@ -7,13 +9,16 @@ module.exports = {
     execute(msg, args) {
         const data = [];
         const { commands } = msg.client;
+        const embed = new discord.MessageEmbed();
+        const value = [];
 
         if (!args.length) {
-            data.push('**Here\'s a list of all my commands:**');
-            data.push(commands.map(command => command.name).join(', \n'));
-            data.push(`\nYou can send \`${process.env.prefix}help [command name]\` to get info on a specific command!`);
-
-            return msg.author.send(data, {split: true})
+            embed.setTitle('Help');
+            embed.setColor('rgba(255,241,0,0.87)');
+            embed.setAuthor('ZykingAut');
+            value.push(commands.map(command => command.name).join('\n'));
+            embed.addField('Commands', value)
+            return msg.author.send(embed)
                 .then(() => {
                     if (msg.channel.type === 'dm') return;
                     msg.reply('I\'ve sent you a DM with all my commands!');
