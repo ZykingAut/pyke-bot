@@ -10,13 +10,19 @@ module.exports = {
         const data = [];
         const { commands } = msg.client;
         const embed = new discord.MessageEmbed();
-        const value = [];
+        const commandNames = [];
+        const descriptions = [];
+        const cooldowns = [];
 
         if (!args.length) {
+            commandNames.push(commands.map(command => command.name).join('\n'));
+            descriptions.push(commands.map(command => command.description).join('\n'));
+            cooldowns.push(commands.map(command => command.cooldown).join('\n'));
             embed.setTitle('Help');
             embed.setColor('YELLOW');
-            value.push(commands.map(command => command.name).join('\n'));
-            embed.addField('Commands', value);
+            embed.addField('Commands', commandNames);
+            embed.addField('Descriptions', descriptions, true);
+            embed.addField('Cooldowns', cooldowns, true);
             return msg.author.send(embed)
                 .then(() => {
                     if (msg.channel.type === 'dm') return;
