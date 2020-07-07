@@ -20,7 +20,7 @@ module.exports = {
             cooldowns.push(commands.map(command => command.cooldown || 3).join('s\n'));
             embed.setTitle('Help');
             embed.setColor('YELLOW');
-            embed.addField('Commands', commandNames);
+            embed.addField('Commands', commandNames, true);
             embed.addField('Cooldowns', cooldowns, true);
             return msg.author.send(embed)
                 .then(() => {
