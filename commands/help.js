@@ -17,7 +17,7 @@ module.exports = {
         if (!args.length) {
             commandNames.push(commands.map(command => command.name).join('\n'));
             descriptions.push(commands.map(command => command.description).join('\n'));
-            cooldowns.push(commands.forEach(command => command.cooldown + 's'));
+            cooldowns.push(commands.map(command => command.cooldown + 's').join('\n'));
             embed.setTitle('Help');
             embed.setColor('YELLOW');
             embed.addField('Commands', commandNames, true);
