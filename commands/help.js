@@ -19,7 +19,7 @@ module.exports = {
             cooldowns.push(commands.map(command => (command.cooldown || 3) + 's').join('\n'));
             embed.setTitle('Help');
             embed.setColor('YELLOW');
-            embed.setDescription(`\nYou can send \`${process.env.prefix}help [command name]\` to get info on a specific command!`);
+            embed.setDescription(`\nYou can send \`${process.env.prefix}help [command name]\`\n to get info on a specific command!`);
             embed.addField('Commands', commandNames, true);
             embed.addField('Cooldowns', cooldowns, true);
             return msg.author.send(embed)
