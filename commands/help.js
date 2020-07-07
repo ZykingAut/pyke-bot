@@ -7,7 +7,6 @@ module.exports = {
     usage: '<command name>',
     cooldown: 5,
     execute(msg, args) {
-        const data = [];
         const { commands } = msg.client;
         const embed = new discord.MessageEmbed();
         const commandNames = [];
@@ -20,6 +19,7 @@ module.exports = {
             cooldowns.push(commands.map(command => (command.cooldown || 3) + 's').join('\n'));
             embed.setTitle('Help');
             embed.setColor('YELLOW');
+            embed.setDescription(`\nYou can send \`${process.env.prefix}help [command name]\` to get info on a specific command!`);
             embed.addField('Commands', commandNames, true);
             embed.addField('Cooldowns', cooldowns, true);
             return msg.author.send(embed)
@@ -39,15 +39,14 @@ module.exports = {
             return msg.reply('that\'s not a valid command!');
         }
 
-        data.push(`**Name:** ${command.name}`);
+        embed.setTitle(command.name);
 
-        if (command.aliases) data.push(`**Aliases:** ${command.aliases.join(', ')}`);
-        if (command.description) data.push(`**Description:** ${command.description}`);
-        if (command.usage) data.push(`**Usage:** ${process.env.prefix}${command.name} ${command.usage}`);
+        if (command.description) embed.addField('Description', command.description);
+        if (command.usage) embed.addField('Usage', command.usage, true);
+        if (command.cooldown) embed.addField('Cooldown', (`${command.cooldown}s`), true);
+        if (command.aliases) embed.addField('Aliases', command.aliases.join(', '));
 
-        data.push(`**Cooldown:** ${command.cooldown || 3} second(s)`);
-
-        msg.channel.send(data, { split: true });
+        msg.channel.send(embed);
 
     }
 };
