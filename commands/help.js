@@ -14,10 +14,9 @@ module.exports = {
 
         if (!args.length) {
             embed.setTitle('Help');
-            embed.setColor('rgba(255,241,0,0.87)');
-            embed.setAuthor('ZykingAut');
+            embed.setColor('YELLOW');
             value.push(commands.map(command => command.name).join('\n'));
-            embed.addField('Commands', value)
+            embed.addField('Commands', value);
             return msg.author.send(embed)
                 .then(() => {
                     if (msg.channel.type === 'dm') return;
