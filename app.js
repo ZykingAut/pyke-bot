@@ -15,7 +15,7 @@ for (const file of commandFiles) {
     client.commands.set(command.name, command);
 }
 
-// On Startup
+// On Startupgit
 client.once('ready', async () => {
     console.log(`Logged in as ${client.user.tag}!`);
     client.user.setStatus('online');
