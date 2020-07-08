@@ -21,10 +21,12 @@ client.once('ready', async () => {
 });
 
 // Precence Cycle
-let changePrecence = setInterval(() => {
+setInterval(() => {
     const precence = quotes[Math.floor(Math.random() * quotes.length)]
-    client.user.setActivity(precence.quote, { type: precence.type });
-    client.user.setStatus('online');}, 120000);
+    client.user.setActivity(precence.quote, {type: precence.type});
+    client.user.setStatus('online'
+    );
+}, 60000);
 
 // Message Listener
 client.on('message', msg => {
