@@ -18,15 +18,17 @@ for (const file of commandFiles) {
 // On Startup
 client.once('ready', async () => {
     console.log(`Logged in as ${client.user.tag}!`);
+    const precence = quotes[Math.floor(Math.random() * quotes.length)]
+    client.user.setActivity(precence.quote, {type: precence.type});
+    client.user.setStatus('online');
 });
 
 // Precence Cycle
 setInterval(() => {
-    const precence = quotes[Math.floor(Math.random() * quotes.length)]
+    const precence = quotes[Math.floor(Math.random() * quotes.length)];
     client.user.setActivity(precence.quote, {type: precence.type});
-    client.user.setStatus('online'
-    );
-}, 60000);
+    client.user.setStatus('online');
+}, 10 * 60 * 1000);
 
 // Message Listener
 client.on('message', msg => {
