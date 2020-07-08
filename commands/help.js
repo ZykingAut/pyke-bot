@@ -43,8 +43,14 @@ module.exports = {
 
         if (command.description) embed.addField('Description', command.description);
         if (command.usage) embed.addField('Usage', command.usage, true);
-        if (command.cooldown) embed.addField('Cooldown', (`${command.cooldown}s`), true);
+        if (command.cooldown) {
+            embed.addField('Cooldown', `${command.cooldown}s`, true);
+        } else {
+            embed.addField('Cooldown', '3s', true);
+        }
         if (command.aliases) embed.addField('Aliases', command.aliases.join(', '));
+        embed.setAuthor(msg.author.username, msg.author.iconURL);
+        embed.setTimestamp(Date.now());
 
         msg.channel.send(embed);
 
