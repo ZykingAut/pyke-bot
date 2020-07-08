@@ -21,7 +21,6 @@ module.exports = {
             embed.setColor('YELLOW');
             embed.setDescription(`\nYou can send \`${process.env.prefix}help <command name>\`\n to get info on a specific command!`);
             embed.addField('Commands', commandNames, true);
-            embed.addField('Cooldowns', cooldowns, true);
             return msg.author.send(embed)
                 .then(() => {
                     if (msg.channel.type === 'dm') return;
@@ -39,7 +38,7 @@ module.exports = {
             return msg.reply('that\'s not a valid command!');
         }
 
-        embed.setTitle(command.name);
+        embed.setTitle(command.name.charAt(0).toUpperCase() + command.name.slice(1));
         embed.setColor('GREEN');
 
         if (command.description) embed.addField('Description', command.description);
