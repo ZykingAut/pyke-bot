@@ -62,6 +62,10 @@ client.on('message', msg => {
         return msg.reply('I can\'t execute that command inside DMs!')
     }
 
+    if (command.adminOnly && !msg.guild.member(msg.author).hasPermission('ADMINISTRATOR')) {
+        return msg.reply('you need to have admin rights to use this command!');
+    }
+
 
     if (!cooldowns.has(command.name)) {
         cooldowns.set(command.name, new discord.Collection());

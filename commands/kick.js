@@ -3,6 +3,7 @@ module.exports = {
     description: 'Command to kick users from a guild',
     usage: '<user>',
     guildOnly: true,
+    adminOnly: true,
     cooldown: 5,
     execute(msg) {
         if (!msg.mentions.users.size) {

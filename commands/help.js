@@ -10,16 +10,14 @@ module.exports = {
         const { commands } = msg.client;
         const embed = new discord.MessageEmbed();
         const commandNames = [];
-        const descriptions = [];
-        const cooldowns = [];
 
         if (!args.length) {
             commandNames.push(commands.map(command => command.name).join('\n'));
-            descriptions.push(commands.map(command => command.description).join('\n'));
-            cooldowns.push(commands.map(command => (command.cooldown || 3) + 's').join('\n'));
             embed.setTitle('Help');
             embed.setColor('YELLOW');
             embed.setDescription(`\nYou can send \`${process.env.prefix}help <command name>\`\n to get info on a specific command!`);
+            embed.setFooter(msg.author.username, msg.author.displayAvatarURL());
+            embed.setTimestamp(Date.now());
             embed.addField('Commands', commandNames, true);
             return msg.author.send(embed)
                 .then(() => {
