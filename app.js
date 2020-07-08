@@ -66,7 +66,6 @@ client.on('message', msg => {
         return msg.reply('you need to have admin rights to use this command!');
     }
 
-
     if (!cooldowns.has(command.name)) {
         cooldowns.set(command.name, new discord.Collection());
     }
