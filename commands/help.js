@@ -49,7 +49,7 @@ module.exports = {
             embed.addField('Cooldown', '3s', true);
         }
         if (command.aliases) embed.addField('Aliases', command.aliases.join(', '));
-        embed.setAuthor(msg.author.username, msg.author.iconURL);
+        embed.setFooter(msg.author.username, msg.author.displayAvatarURL());
         embed.setTimestamp(Date.now());
 
         msg.channel.send(embed);
