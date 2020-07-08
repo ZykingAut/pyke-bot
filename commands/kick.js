@@ -11,6 +11,6 @@ module.exports = {
             return msg.reply('You need to tag a user in order to kick them!');
         }
         const taggedUser = msg.mentions.users.first();
-        return msg.guild.member(taggedUser).kick(args.join(' '));
+        return msg.guild.member(taggedUser).kick(args.join(' ')).catch(e => console.log(e));
     },
 };
