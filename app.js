@@ -1,7 +1,7 @@
 const fs = require('fs');
 const discord = require('discord.js');
 const { Op } = require('sequelize');
-
+const quotes = require('./data/quotes.json');
 
 //Collections
 const client = new discord.Client();
@@ -15,12 +15,16 @@ for (const file of commandFiles) {
     client.commands.set(command.name, command);
 }
 
-// On Startupgit
+// On Startup
 client.once('ready', async () => {
     console.log(`Logged in as ${client.user.tag}!`);
-    client.user.setStatus('online');
-    client.user.setActivity('Himself being tested!', { type: 'WATCHING', url: 'https://www.youtube.com' });
 });
+
+// Precence Cycle
+let changePrecence = setInterval(() => {
+    const precence = quotes[Math.floor(Math.random() * quotes.length)]
+    client.user.setActivity(precence.quote, { type: precence.type });
+    client.user.setStatus('online');}, 5000);
 
 // Message Listener
 client.on('message', msg => {
