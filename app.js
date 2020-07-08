@@ -1,7 +1,6 @@
 const fs = require('fs');
 const discord = require('discord.js');
 const { Op } = require('sequelize');
-const quotes = require('./data/quotes.json');
 
 //Collections
 const client = new discord.Client();
@@ -15,18 +14,24 @@ for (const file of commandFiles) {
     client.commands.set(command.name, command);
 }
 
+// Precences
+const precences = [
+    ['WATCHING', 'The Void'],
+    ['PLAYING', 'with The Cosmos']
+];
+
 // On Startup
 client.once('ready', async () => {
     console.log(`Logged in as ${client.user.tag}!`);
-    const precence = quotes[Math.floor(Math.random() * quotes.length)]
-    client.user.setActivity(precence.quote, {type: precence.type});
+    const precenceIndex = Math.floor(Math.random() * precences.length);
+    client.user.setActivity(precences[precenceIndex][1], {type: precences[precenceIndex][0]});
     client.user.setStatus('online');
 });
 
 // Precence Cycle
 setInterval(() => {
-    const precence = quotes[Math.floor(Math.random() * quotes.length)];
-    client.user.setActivity(precence.quote, {type: precence.type});
+    const precenceIndex = Math.floor(Math.random() * precences.length);
+    client.user.setActivity(precences[precenceIndex][1], {type: precences[precenceIndex][0]});
     client.user.setStatus('online');
 }, 10 * 60 * 1000);
 
