@@ -24,7 +24,7 @@ client.once('ready', async () => {
 let changePrecence = setInterval(() => {
     const precence = quotes[Math.floor(Math.random() * quotes.length)]
     client.user.setActivity(precence.quote, { type: precence.type });
-    client.user.setStatus('online');}, 5000);
+    client.user.setStatus('online');}, 120000);
 
 // Message Listener
 client.on('message', msg => {
