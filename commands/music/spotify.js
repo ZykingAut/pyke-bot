@@ -4,6 +4,7 @@ module.exports = {
     name: 'spotify',
     description: 'Command to display the current song a user is listening to.',
     aliases: 'track',
+    guildOnly: true,
     execute(msg) {
         let user = msg.mentions.users.first() || msg.author;
 
