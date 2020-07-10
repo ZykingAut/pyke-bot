@@ -2,6 +2,7 @@ module.exports = {
     name: 'quiz',
     description: 'Command to setup a quiz.',
     cooldown: 5,
+    guildOnly: true,
     execute(msg) {
         const quiz = require('../../data/quiz.json');
         const item = quiz[Math.floor(Math.random() * quiz.length)];
