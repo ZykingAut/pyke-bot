@@ -8,11 +8,25 @@ module.exports = {
     cooldown: 5,
     execute(msg, args) {
         const { commands } = msg.client;
+        const { fun } = msg.client.funCommands;
+        const { help } = msg.client.helpCommands;
+        const { mod } = msg.client.modCommands;
+        const { music } = msg.client.musicCommands;
+        const { util } = msg.client.utilCommands;
         const embed = new discord.MessageEmbed();
         const commandNames = [];
+        const funCommandNames = [];
+        const helpCommandNames = [];
+        const modCommandNames = [];
+        const musicCommandNames = [];
+        const utilCommandNames = [];
 
         if (!args.length) {
-            commandNames.push(commands.map(command => command.name).join('\n'));
+            funCommandNames.push(fun.map(command => command.name).join('\n'));
+            helpCommandNames.push(help.map(command => command.name).join('\n'));
+            modCommandNames.push(mod.map(command => command.name).join('\n'));
+            musicCommandNames.push(music.map(command => command.name).join('\n'));
+            utilCommandNames.push(util.map(command => command.name).join('\n'));
             embed.setTitle('Help');
             embed.setColor('YELLOW');
             embed.setDescription(`\nYou can send \`${process.env.prefix}help <command name>\`\n to get info on a specific command!`);
