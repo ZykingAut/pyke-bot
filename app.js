@@ -9,6 +9,7 @@ client.helpCommands = new discord.Collection();
 client.modCommands = new discord.Collection();
 client.musicCommands = new discord.Collection();
 client.utilCommands = new discord.Collection();
+client.commands = new discord.Collection();
 const cooldowns = new discord.Collection();
 
 // Command Handler
@@ -16,30 +17,35 @@ const funCommands = fs.readdirSync('./commands/fun').filter(file => file.endsWit
 for (const file of funCommands) {
     const command = require(`./commands/fun/${file}`);
     client.funCommands.set(command.name, command);
+    client.commands.set(command.name, command);
 }
 
 const helpCommands = fs.readdirSync('./commands/help').filter(file => file.endsWith('.js'));
 for (const file of helpCommands) {
     const command = require(`./commands/help/${file}`);
     client.helpCommands.set(command.name, command);
+    client.commands.set(command.name, command);
 }
 
 const modCommands = fs.readdirSync('./commands/mod').filter(file => file.endsWith('.js'));
 for (const file of modCommands) {
     const command = require(`./commands/mod/${file}`);
     client.modCommands.set(command.name, command);
+    client.commands.set(command.name, command);
 }
 
 const musicCommands = fs.readdirSync('./commands/music').filter(file => file.endsWith('.js'));
 for (const file of musicCommands) {
     const command = require(`./commands/music/${file}`);
     client.musicCommands.set(command.name, command);
+    client.commands.set(command.name, command);
 }
 
 const utilCommands = fs.readdirSync('./commands/util').filter(file => file.endsWith('.js'));
 for (const file of utilCommands) {
     const command = require(`./commands/util/${file}`);
     client.utilCommands.set(command.name, command);
+    client.commands.set(command.name, command);
 }
 
 // On Startup
@@ -58,23 +64,14 @@ client.on('message', msg => {
     const args = msg.content.slice(prefix.length).split(/ +/);
     const commandName = args.shift().toLowerCase();
 
-    const command = client.funCommands.get(commandName) || client.funCommands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
-    if (!command) {
-        const command = client.helpCommands.get(commandName) || client.helpCommands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
-        if (!command) {
-            const command = client.modCommands.get(commandName) || client.modCommands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
-            if (!command) {
-                const command = client.musicCommands.get(commandName) || client.musicCommands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
-                if (!command) {
-                    const command = client.utilCommands.get(commandName) || client.utilCommands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
-                    if (!command) {
-                        return;
-                    }
-                }
-            }
-        }
-    }
+    const command = client.commands.get(commandName) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
+
+    console.log(funCommands);
     console.log(helpCommands);
+    console.log(modCommands);
+    console.log(musicCommands);
+    console.log(utilCommands);
+
     if (command.args && !args.length) {
         let reply = `You didn't provide any arguments, ${msg.author}!`;
 
