@@ -23,7 +23,9 @@
     "sequelize": "^5.21.6",
     "spotify-web-api-node": "^4.0.0",
     "sqlite3": "^4.1.1",
-    "ytdl-core": "^2.1.7"
+    "ytdl-core": "^2.1.7",
+    "ytpl": "^0.1.22",
+    "ytsr": "^0.1.15"
   },
   "devDependencies": {},
   "scripts": {

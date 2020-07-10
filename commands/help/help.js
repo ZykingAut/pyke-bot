@@ -1,40 +1,59 @@
 const discord = require('discord.js');
-const { client } = require('app.js');
 
 module.exports = {
     name: 'help',
     description: 'List all of my commands or info about a specific command.',
+    type: 'help',
     aliases: ['commands'],
     usage: '<command name>',
     cooldown: 5,
     execute(msg, args) {
-        const { commands } = client;
-        const { fun } = client.funCommands;
-        const { help } = client.helpCommands;
-        const { mod } = client.modCommands;
-        const { music } = client.musicCommands;
-        const { util } = client.utilCommands;
+        // Fetching Information
+        const { commands } = msg.client;
+        const fun = msg.client.funCommands;
+        const mod = msg.client.modCommands;
+        const music = msg.client.musicCommands;
+        const util = msg.client.utilCommands;
+
+        // Setting Variables
         const embed = new discord.MessageEmbed();
+
+        // Initializing Arrays
+        const commandNames = [];
         const funCommandNames = [];
-        const helpCommandNames = [];
         const modCommandNames = [];
         const musicCommandNames = [];
         const utilCommandNames = [];
 
         if (!args.length) {
+
+            // Filling the Arrays
+            commandNames.push(commands.map(command => command.name).join('\n'));
             funCommandNames.push(fun.map(command => command.name).join('\n'));
-            helpCommandNames.push(help.map(command => command.name).join('\n'));
             modCommandNames.push(mod.map(command => command.name).join('\n'));
             musicCommandNames.push(music.map(command => command.name).join('\n'));
             utilCommandNames.push(util.map(command => command.name).join('\n'));
+
+            // Embed Header etc
             embed.setTitle('Help');
             embed.setColor('YELLOW');
             embed.setDescription(`\nYou can send \`${process.env.prefix}help <command name>\`\n to get info on a specific command!`);
             embed.setFooter(msg.author.username, msg.author.displayAvatarURL());
             embed.setTimestamp(Date.now());
-            embed.addField('Fun', funCommandNames, true);
-            embed.addField('Help', helpCommandNames, true);
-            embed.addField('mod', modCommandNames, true);
+
+            // Embed Content
+            embed.addFields(
+                { name: 'Fun', value: funCommandNames, inline: true },
+                { name: 'Mod', value: modCommandNames, inline: true },
+                { name: '\u200b', value: '\u200b', inline: true }
+            );
+            embed.addFields(
+                { name: 'Music', value: musicCommandNames, inline: true },
+                { name: 'Utility', value: utilCommandNames, inline: true },
+                { name: '\u200b', value: '\u200b', inline: true }
+            );
+
+            // Sending Help Embed Message
             return msg.author.send(embed)
                 .then(() => {
                     if (msg.channel.type === 'dm') return;
@@ -45,6 +64,8 @@ module.exports = {
                     msg.reply('it seems like I can\'t DM you! Do you have DMs disabled?');
                 });
         }
+
+
         const name = args[0].toLowerCase();
         const command = commands.get(name) || commands.find(c => c.aliases && c.aliases.includes(name));
 

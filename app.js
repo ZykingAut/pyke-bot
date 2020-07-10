@@ -5,7 +5,6 @@ const { Op } = require('sequelize');
 //Collections
 const client = new discord.Client();
 client.funCommands = new discord.Collection();
-client.helpCommands = new discord.Collection();
 client.modCommands = new discord.Collection();
 client.musicCommands = new discord.Collection();
 client.utilCommands = new discord.Collection();
@@ -23,7 +22,6 @@ for (const file of funCommands) {
 const helpCommands = fs.readdirSync('./commands/help').filter(file => file.endsWith('.js'));
 for (const file of helpCommands) {
     const command = require(`./commands/help/${file}`);
-    client.helpCommands.set(command.name, command);
     client.commands.set(command.name, command);
 }
 
@@ -65,12 +63,6 @@ client.on('message', msg => {
     const commandName = args.shift().toLowerCase();
 
     const command = client.commands.get(commandName) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
-
-    console.log(funCommands);
-    console.log(helpCommands);
-    console.log(modCommands);
-    console.log(musicCommands);
-    console.log(utilCommands);
 
     if (command.args && !args.length) {
         let reply = `You didn't provide any arguments, ${msg.author}!`;
