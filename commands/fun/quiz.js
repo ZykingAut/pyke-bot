@@ -3,7 +3,7 @@ module.exports = {
     description: 'Command to setup a quiz.',
     cooldown: 5,
     execute(msg) {
-        const quiz = require('../data/quiz.json');
+        const quiz = require('../../data/quiz.json');
         const item = quiz[Math.floor(Math.random() * quiz.length)];
         const filter = response => {
             return item.answers.some(answer => answer.toLowerCase() === response.content.toLowerCase());
