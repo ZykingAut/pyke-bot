@@ -4,36 +4,50 @@ const { Op } = require('sequelize');
 
 //Collections
 const client = new discord.Client();
-client.commands = new discord.Collection();
+client.funCommands = new discord.Collection();
+client.helpCommands = new discord.Collection();
+client.modCommands = new discord.Collection();
+client.musicCommands = new discord.Collection();
+client.utilCommands = new discord.Collection();
 const cooldowns = new discord.Collection();
 
 // Command Handler
-const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
-for (const file of commandFiles) {
-    const command = require(`./commands/${file}`);
-    client.commands.set(command.name, command);
+const funCommands = fs.readdirSync('./commands/fun').filter(file => file.endsWith('.js'));
+for (const file of funCommands) {
+    const command = require(`./commands/fun/${file}`);
+    client.funCommands.set(command.name, command);
 }
 
-// Precences
-const precences = [
-    ['WATCHING', 'The Void'],
-    ['PLAYING', 'with The Cosmos']
-];
+const helpCommands = fs.readdirSync('./commands/help').filter(file => file.endsWith('.js'));
+for (const file of helpCommands) {
+    const command = require(`./commands/help/${file}`);
+    client.helpCommands.set(command.name, command);
+}
+
+const modCommands = fs.readdirSync('./commands/mod').filter(file => file.endsWith('.js'));
+for (const file of modCommands) {
+    const command = require(`./commands/mod/${file}`);
+    client.modCommands.set(command.name, command);
+}
+
+const musicCommands = fs.readdirSync('./commands/music').filter(file => file.endsWith('.js'));
+for (const file of musicCommands) {
+    const command = require(`./commands/music/${file}`);
+    client.musicCommands.set(command.name, command);
+}
+
+const utilCommands = fs.readdirSync('./commands/util').filter(file => file.endsWith('.js'));
+for (const file of utilCommands) {
+    const command = require(`./commands/util/${file}`);
+    client.utilCommands.set(command.name, command);
+}
 
 // On Startup
 client.once('ready', async () => {
     console.log(`Logged in as ${client.user.tag}!`);
-    const precenceIndex = Math.floor(Math.random() * precences.length);
-    client.user.setActivity(precences[precenceIndex][1], {type: precences[precenceIndex][0]});
+    client.user.setActivity('The Void', {type: 'WATCHING'});
     client.user.setStatus('online');
 });
-
-// Precence Cycle
-setInterval(() => {
-    const precenceIndex = Math.floor(Math.random() * precences.length);
-    client.user.setActivity(precences[precenceIndex][1], {type: precences[precenceIndex][0]});
-    client.user.setStatus('online');
-}, 10 * 60 * 1000);
 
 // Message Listener
 client.on('message', msg => {
@@ -44,9 +58,22 @@ client.on('message', msg => {
     const args = msg.content.slice(prefix.length).split(/ +/);
     const commandName = args.shift().toLowerCase();
 
-    const command = client.commands.get(commandName) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
-
-    if (!command) return;
+    const command = client.funCommands.get(commandName) || client.funCommands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
+    if (!command) {
+        const command = client.helpCommands.get(commandName) || client.helpCommands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
+        if (!command) {
+            const command = client.modCommands.get(commandName) || client.modCommands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
+            if (!command) {
+                const command = client.musicCommands.get(commandName) || client.musicCommands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
+                if (!command) {
+                    const command = client.utilCommands.get(commandName) || client.utilCommands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
+                    if (!command) {
+                        return;
+                    }
+                }
+            }
+        }
+    }
 
     if (command.args && !args.length) {
         let reply = `You didn't provide any arguments, ${msg.author}!`;
