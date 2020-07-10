@@ -74,7 +74,7 @@ client.on('message', msg => {
             }
         }
     }
-    console.log(command);
+    console.log(helpCommands);
     if (command.args && !args.length) {
         let reply = `You didn't provide any arguments, ${msg.author}!`;
 
