@@ -1,4 +1,5 @@
 const discord = require('discord.js');
+const { client } = require('app.js');
 
 module.exports = {
     name: 'help',
@@ -7,14 +8,13 @@ module.exports = {
     usage: '<command name>',
     cooldown: 5,
     execute(msg, args) {
-        const { commands } = msg.client;
-        const { fun } = msg.client.funCommands;
-        const { help } = msg.client.helpCommands;
-        const { mod } = msg.client.modCommands;
-        const { music } = msg.client.musicCommands;
-        const { util } = msg.client.utilCommands;
+        const { commands } = client;
+        const { fun } = client.funCommands;
+        const { help } = client.helpCommands;
+        const { mod } = client.modCommands;
+        const { music } = client.musicCommands;
+        const { util } = client.utilCommands;
         const embed = new discord.MessageEmbed();
-        const commandNames = [];
         const funCommandNames = [];
         const helpCommandNames = [];
         const modCommandNames = [];
