@@ -32,7 +32,9 @@ module.exports = {
             embed.setDescription(`\nYou can send \`${process.env.prefix}help <command name>\`\n to get info on a specific command!`);
             embed.setFooter(msg.author.username, msg.author.displayAvatarURL());
             embed.setTimestamp(Date.now());
-            embed.addField('Commands', commandNames, true);
+            embed.addField('Fun', funCommandNames, true);
+            embed.addField('Help', helpCommandNames, true);
+            embed.addField('mod', modCommandNames, true);
             return msg.author.send(embed)
                 .then(() => {
                     if (msg.channel.type === 'dm') return;
