@@ -11,11 +11,11 @@ module.exports = {
         };
 
         msg.channel.send(item.question).then(() => {
-            msg.channel.awaitMessages(filter, { max: 1, time: 15000, errors: ['time']})
+            msg.channel.awaitMessages(filter, { max: 1, time: (20 * 1000), errors: ['time']})
                 .then(collected => {
                     msg.channel.send(`${collected.first().author} got the correct answer!`);
                 })
-                .catch(collected => {
+                .catch(() => {
                     msg.channel.send('Looks like nobody got the answer this time.');
                 });
         });

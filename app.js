@@ -2,6 +2,7 @@ const fs = require('fs');
 const discord = require('discord.js');
 const { Op } = require('sequelize');
 const quotes = require('./data/quotes.json');
+require('dotenv').config({ path: __dirname + '/.env' });
 
 //Collections
 const client = new discord.Client();
@@ -10,6 +11,7 @@ client.modCommands = new discord.Collection();
 client.musicCommands = new discord.Collection();
 client.utilCommands = new discord.Collection();
 client.commands = new discord.Collection();
+client.warnedUsers = new discord.Collection();
 const cooldowns = new discord.Collection();
 
 // Command Handler
@@ -49,7 +51,7 @@ for (const file of utilCommands) {
 
 // Starting Bot
 async function connect(client) {
-    await client.login(process.env.discordtoken);
+    await client.login(process.env.DISCORD);
 
     // On Startup
     client.once('ready', async () => {
@@ -59,7 +61,7 @@ async function connect(client) {
 
     // Message Listener
     client.on('message', msg => {
-        const prefix = process.env.prefix;
+        const prefix = process.env.PREFIX;
 
         if (!msg.content.startsWith(prefix)) return;
 
