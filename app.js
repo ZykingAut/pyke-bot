@@ -70,16 +70,18 @@ async function connect(client) {
         if (msg.guild) {
             if (await prefixes.get(msg.guild.id)) {
                 if (msg.content.startsWith(process.env.GLOBALPREFIX) && process.env.GLOBALPREFIX === !(await prefixes.get(msg.guild.id))) return;
-                if (!msg.content.startsWith(await prefixes.get(msg.guild.id))) return;
                 prefix = await prefixes.get(msg.guild.id);
-                args = msg.content.slice(1).split(/\s+/);
+                if (!msg.content.startsWith(prefix)) return;
+                args = msg.content.slice(prefix.length).split(/\s+/);
             } else {
                 if (!msg.content.startsWith(process.env.GLOBALPREFIX)) return;
                 prefix = process.env.GLOBALPREFIX;
-                args = msg.content.slice(1).split(/\s+/);
+                args = msg.content.slice(prefix.length).split(/\s+/);
             }
         } else {
-            args = msg.content.slice(1).split(/\s+/);
+            prefix = process.env.GLOBALPREFIX;
+            if (msg.content.startsWith(prefix)) return;
+            args = msg.content.slice(prefix).split(/\s+/);
         }
         const commandName = args.shift().toLowerCase();
 
@@ -88,21 +90,20 @@ async function connect(client) {
 
         if (command.args && !args.length) {
             let reply = `You didn't provide any arguments, ${msg.author}!`;
-
             if (command.usage) {
                 reply += `\nThe proper usage would be: \'${prefix}${command.name} ${command.usage}\'`;
             }
             return msg.channel.send(reply);
         }
-
         if (command.guildOnly && msg.channel.type !== 'text') {
             return msg.reply('I can\'t execute that command inside DMs!')
         }
-
         if (command.adminOnly && !msg.guild.member(msg.author).hasPermission('ADMINISTRATOR')) {
             return msg.reply('you need to have admin rights to use this command!');
         }
-
+        if (command.nsfwOnly && !msg.channel.nsfw) {
+            return msg.reply('this command is only available in nsfw channels!');
+        }
         if (!cooldowns.has(command.name)) {
             cooldowns.set(command.name, new discord.Collection());
         }
