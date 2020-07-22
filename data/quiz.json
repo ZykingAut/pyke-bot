@@ -70,5 +70,9 @@
   {
     "questions": "The word \"Pokémon\" is generally understood to be a translation of which phrase?",
     "answers": ["poket monsters", "poket monster", "poket-monsters", "poket-monster"]
+  },
+  {
+    "questions": "IDK this halt",
+    "answers": "yes"
   }
 ]

@@ -1,4 +1,4 @@
-const discord = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = {
     name: 'help',
@@ -16,7 +16,7 @@ module.exports = {
         const util = msg.client.utilCommands;
 
         // Setting Variables
-        const embed = new discord.MessageEmbed();
+        const embed = new MessageEmbed();
 
         // Initializing Arrays
         const commandNames = [];

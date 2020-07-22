@@ -1,7 +1,7 @@
 const fs = require('fs');
 const discord = require('discord.js');
-const { Op } = require('sequelize');
 const quotes = require('./data/quotes.json');
+const Keyv = require('keyv');
 require('dotenv').config({ path: __dirname + '/.env' });
 
 //Collections
@@ -13,6 +13,10 @@ client.utilCommands = new discord.Collection();
 client.commands = new discord.Collection();
 client.warnedUsers = new discord.Collection();
 const cooldowns = new discord.Collection();
+
+// Databases
+const prefixes = new Keyv('sqlite://./data/prefixes.sqlite');
+prefixes.on('error', err => console.error('Keyv connection error:', err));
 
 // Command Handler
 const funCommands = fs.readdirSync('./commands/fun').filter(file => file.endsWith('.js'));
@@ -58,17 +62,29 @@ async function connect(client) {
         console.log(`Logged in as ${client.user.tag}!`);
     });
 
-
     // Message Listener
-    client.on('message', msg => {
-        const prefix = process.env.PREFIX;
-
-        if (!msg.content.startsWith(prefix)) return;
-
-        const args = msg.content.slice(prefix.length).split(/ +/);
+    client.on('message', async msg => {
+        if (msg.author.bot) return;
+        let prefix;
+        let args;
+        if (msg.guild) {
+            if (await prefixes.get(msg.guild.id)) {
+                if (msg.content.startsWith(process.env.GLOBALPREFIX) && process.env.GLOBALPREFIX === !(await prefixes.get(msg.guild.id))) return;
+                if (!msg.content.startsWith(await prefixes.get(msg.guild.id))) return;
+                prefix = await prefixes.get(msg.guild.id);
+                args = msg.content.slice(1).split(/\s+/);
+            } else {
+                if (!msg.content.startsWith(process.env.GLOBALPREFIX)) return;
+                prefix = process.env.GLOBALPREFIX;
+                args = msg.content.slice(1).split(/\s+/);
+            }
+        } else {
+            args = msg.content.slice(1).split(/\s+/);
+        }
         const commandName = args.shift().toLowerCase();
 
         const command = client.commands.get(commandName) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
+        if (!command) return;
 
         if (command.args && !args.length) {
             let reply = `You didn't provide any arguments, ${msg.author}!`;
@@ -76,7 +92,6 @@ async function connect(client) {
             if (command.usage) {
                 reply += `\nThe proper usage would be: \'${prefix}${command.name} ${command.usage}\'`;
             }
-
             return msg.channel.send(reply);
         }
 
@@ -108,9 +123,8 @@ async function connect(client) {
         timestamps.set(msg.author.id, now);
         setTimeout(() => timestamps.delete(msg.author.id), cooldownAmount);
 
-
         try {
-            command.execute(msg, args, client, Op);
+            command.execute(msg, args, client, prefixes);
         } catch (error) {
             console.log(error);
             msg.reply('there was an error trying to execute that command!');
