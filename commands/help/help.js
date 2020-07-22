@@ -37,7 +37,7 @@ module.exports = {
             // Embed Header etc
             embed.setTitle('Help');
             embed.setColor('YELLOW');
-            embed.setDescription(`\nYou can send \`${process.env.prefix}help <command name>\`\n to get info on a specific command!`);
+            embed.setDescription(`\nYou can send \`${process.env.GLOBALPREFIX}help <command name>\`\n to get info on a specific command!`);
             embed.setFooter(msg.author.username, msg.author.displayAvatarURL());
             embed.setTimestamp(Date.now());
 

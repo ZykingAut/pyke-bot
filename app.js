@@ -15,7 +15,7 @@ client.warnedUsers = new discord.Collection();
 const cooldowns = new discord.Collection();
 
 // Databases
-const prefixes = new Keyv('sqlite://./data/prefixes.sqlite');
+const prefixes = new Keyv();
 prefixes.on('error', err => console.error('Keyv connection error:', err));
 
 // Command Handler
@@ -65,23 +65,20 @@ async function connect(client) {
     // Message Listener
     client.on('message', async msg => {
         if (msg.author.bot) return;
-        let prefix;
+        let prefix = process.env.GLOBALPREFIX;
         let args;
-        if (msg.guild) {
-            if (await prefixes.get(msg.guild.id)) {
-                if (msg.content.startsWith(process.env.GLOBALPREFIX) && process.env.GLOBALPREFIX === !(await prefixes.get(msg.guild.id))) return;
+        if (msg.guild) { // Check if the message was posted in a guild
+            if (await prefixes.get(msg.guild.id)) { // Check if the guild the message was send has a set prefix
                 prefix = await prefixes.get(msg.guild.id);
                 if (!msg.content.startsWith(prefix)) return;
                 args = msg.content.slice(prefix.length).split(/\s+/);
             } else {
-                if (!msg.content.startsWith(process.env.GLOBALPREFIX)) return;
-                prefix = process.env.GLOBALPREFIX;
+                if (!msg.content.startsWith(prefix)) return;
                 args = msg.content.slice(prefix.length).split(/\s+/);
             }
         } else {
-            prefix = process.env.GLOBALPREFIX;
-            if (msg.content.startsWith(prefix)) return;
-            args = msg.content.slice(prefix).split(/\s+/);
+            if (!msg.content.startsWith(prefix)) return;
+            args = msg.content.slice(prefix.length).split(/\s+/);
         }
         const commandName = args.shift().toLowerCase();
 
