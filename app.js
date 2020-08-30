@@ -8,7 +8,6 @@ const client = new discord.Client();
 //Collections
 client.funCommands = new discord.Collection();
 client.modCommands = new discord.Collection();
-client.musicCommands = new discord.Collection();
 client.utilCommands = new discord.Collection();
 client.commands = new discord.Collection();
 const cooldowns = new discord.Collection();
@@ -44,13 +43,6 @@ const modCommands = fs.readdirSync('./commands/mod').filter(file => file.endsWit
 for (const file of modCommands) {
     const command = require(`./commands/mod/${file}`);
     client.modCommands.set(command.name, command);
-    client.commands.set(command.name, command);
-}
-
-const musicCommands = fs.readdirSync('./commands/music').filter(file => file.endsWith('.js'));
-for (const file of musicCommands) {
-    const command = require(`./commands/music/${file}`);
-    client.musicCommands.set(command.name, command);
     client.commands.set(command.name, command);
 }
 
