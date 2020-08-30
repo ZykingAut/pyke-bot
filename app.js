@@ -3,20 +3,28 @@ const discord = require('discord.js');
 const quotes = require('./data/quotes.json');
 const Keyv = require('keyv');
 require('dotenv').config({ path: __dirname + '/.env' });
+const client = new discord.Client();
 
 //Collections
-const client = new discord.Client();
 client.funCommands = new discord.Collection();
 client.modCommands = new discord.Collection();
 client.musicCommands = new discord.Collection();
 client.utilCommands = new discord.Collection();
 client.commands = new discord.Collection();
-client.warnedUsers = new discord.Collection();
 const cooldowns = new discord.Collection();
 
 // Databases
-const prefixes = new Keyv();
+const prefixes = new Keyv('sqlite://./data/guilds.sqlite', {
+    table: 'prefixes',
+    type: String,
+});
 prefixes.on('error', err => console.error('Keyv connection error:', err));
+
+const warnings = new Keyv('sqlite://./data/guilds.sqlite', {
+    table: 'warnings',
+    type: Array,
+});
+warnings.on('error', err => console.error('Keyv connection error:', err));
 
 // Command Handler
 const funCommands = fs.readdirSync('./commands/fun').filter(file => file.endsWith('.js'));
@@ -58,7 +66,7 @@ async function connect(client) {
     await client.login(process.env.DISCORD);
 
     // On Startup
-    client.once('ready', async () => {
+    await client.once('ready', async () => {
         console.log(`Logged in as ${client.user.tag}!`);
     });
 
@@ -71,15 +79,10 @@ async function connect(client) {
             if (await prefixes.get(msg.guild.id)) { // Check if the guild the message was send has a set prefix
                 prefix = await prefixes.get(msg.guild.id);
                 if (!msg.content.startsWith(prefix)) return;
-                args = msg.content.slice(prefix.length).split(/\s+/);
-            } else {
-                if (!msg.content.startsWith(prefix)) return;
-                args = msg.content.slice(prefix.length).split(/\s+/);
-            }
-        } else {
-            if (!msg.content.startsWith(prefix)) return;
-            args = msg.content.slice(prefix.length).split(/\s+/);
-        }
+            } else if (!msg.content.startsWith(prefix)) return;
+        } else if (!msg.content.startsWith(prefix)) return;
+
+        args = msg.content.slice(prefix.length).split(/ +/);
         const commandName = args.shift().toLowerCase();
 
         const command = client.commands.get(commandName) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
@@ -122,7 +125,7 @@ async function connect(client) {
         setTimeout(() => timestamps.delete(msg.author.id), cooldownAmount);
 
         try {
-            command.execute(msg, args, client, prefixes);
+            command.execute(msg, args, client, prefixes, warnings);
         } catch (error) {
             console.log(error);
             msg.reply('there was an error trying to execute that command!');
@@ -130,18 +133,14 @@ async function connect(client) {
     });
 
     // Activity
-    client.user.setStatus('online')
-        .then(precence => console.log(`Client's status is set to ${precence.status}`))
-        .catch(error => console.error(error));
-
-    client.user.setActivity('The Void!', {type:'WATCHING'})
-        .then(precence => console.log(`switched activity to \"${(precence.activities[0].type).toLowerCase()} ${precence.activities[0].name}\"`));
-
-    setInterval(() => {
-        let quote = quotes[Math.floor(Math.random() * Math.floor(quotes.length))]
-        client.user.setActivity(quote.quote, {type: quote.type})
+    const quote = quotes[Math.floor(Math.random() * Math.floor(quotes.length))];
+    await client.user.setActivity(quote.quote, {type: quote.type})
+        .then(precence => console.log(`switched activity to ${precence.activities[0].name}`));
+    setInterval(async () => {
+        let quote = quotes[Math.floor(Math.random() * Math.floor(quotes.length))];
+        await client.user.setActivity(quote.quote, {type: quote.type})
             .then(precence => console.log(`switched activity to ${precence.activities[0].name}`));
     }, 10 * 60 * 1000);
 }
 
-connect(client);
+connect(client).then(console.log('Starting bot...'));
