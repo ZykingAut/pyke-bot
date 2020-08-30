@@ -48,7 +48,6 @@ module.exports = {
                 { name: '\u200b', value: '\u200b', inline: true }
             );
             embed.addFields(
-                { name: 'Music', value: musicCommandNames, inline: true },
                 { name: 'Utility', value: utilCommandNames, inline: true },
                 { name: '\u200b', value: '\u200b', inline: true }
             );
