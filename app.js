@@ -82,7 +82,7 @@ async function connect(client) {
             } else if (!msg.content.startsWith(prefix)) return;
         } else if (!msg.content.startsWith(prefix)) return;
 
-        args = msg.content.slice(prefix.length).split(/ +/);
+        args = msg.content.slice(prefix.length).split(' ');
         const commandName = args.shift().toLowerCase();
 
         const command = client.commands.get(commandName) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
