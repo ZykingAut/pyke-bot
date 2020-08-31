@@ -9,6 +9,7 @@ const client = new discord.Client();
 client.funCommands = new discord.Collection();
 client.modCommands = new discord.Collection();
 client.utilCommands = new discord.Collection();
+client.esportCommands = new discord.Collection();
 client.commands = new discord.Collection();
 const cooldowns = new discord.Collection();
 
@@ -18,12 +19,6 @@ const prefixes = new Keyv('sqlite://./data/guilds.sqlite', {
     type: String,
 });
 prefixes.on('error', err => console.error('Keyv connection error:', err));
-
-const warnings = new Keyv('sqlite://./data/guilds.sqlite', {
-    table: 'warnings',
-    type: Array,
-});
-warnings.on('error', err => console.error('Keyv connection error:', err));
 
 // Command Handler
 const funCommands = fs.readdirSync('./commands/fun').filter(file => file.endsWith('.js'));
@@ -46,6 +41,13 @@ for (const file of modCommands) {
     client.commands.set(command.name, command);
 }
 
+const esportCommands = fs.readdirSync('./commands/esports').filter(file => file.endsWith('.js'));
+for (const file of esportCommands) {
+    const command = require(`./commands/esports/${file}`);
+    client.esportCommands.set(command.name, command);
+    client.commands.set(command.name, command);
+}
+
 const utilCommands = fs.readdirSync('./commands/util').filter(file => file.endsWith('.js'));
 for (const file of utilCommands) {
     const command = require(`./commands/util/${file}`);
@@ -55,9 +57,10 @@ for (const file of utilCommands) {
 
 // Starting Bot
 async function connect(client) {
+    // Login the user
     await client.login(process.env.DISCORD);
 
-    // On Startup
+    // Log if the right token was provided
     await client.once('ready', async () => {
         console.log(`Logged in as ${client.user.tag}!`);
     });
@@ -69,11 +72,11 @@ async function connect(client) {
         let args;
         if (msg.guild) { // Check if the message was posted in a guild
             if (await prefixes.get(msg.guild.id)) { // Check if the guild the message was send has a set prefix
-                prefix = await prefixes.get(msg.guild.id);
-                if (!msg.content.startsWith(prefix)) return;
-            } else if (!msg.content.startsWith(prefix)) return;
-        } else if (!msg.content.startsWith(prefix)) return;
+                prefix = await prefixes.get(msg.guild.id)
+            }
+        }
 
+        if (!msg.content.startsWith(prefix)) return;
         args = msg.content.slice(prefix.length).split(/ +/);
         const commandName = args.shift().toLowerCase();
         if (commandName === '') return;
@@ -81,6 +84,7 @@ async function connect(client) {
         const command = client.commands.get(commandName) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
         if (!command) return;
 
+        // Check if the Command needs Arguments
         if (command.args && !args.length) {
             let reply = `You didn't provide any arguments, ${msg.author}!`;
             if (command.usage) {
@@ -88,6 +92,8 @@ async function connect(client) {
             }
             return msg.channel.send(reply);
         }
+
+        // Check for Channelproperties and Commandproperties
         if (command.guildOnly && msg.channel.type !== 'text') {
             return msg.reply('I can\'t execute that command inside DMs!')
         }
@@ -97,6 +103,8 @@ async function connect(client) {
         if (command.nsfwOnly && !msg.channel.nsfw) {
             return msg.reply('this command is only available in nsfw channels!');
         }
+
+        // Check if the Command has a cooldown and set it if
         if (!cooldowns.has(command.name)) {
             cooldowns.set(command.name, new discord.Collection());
         }
@@ -118,14 +126,14 @@ async function connect(client) {
         setTimeout(() => timestamps.delete(msg.author.id), cooldownAmount);
 
         try {
-            command.execute(msg, args, client, prefixes, warnings);
+            command.execute(msg, args, client, prefixes);
         } catch (error) {
             console.log(error);
             msg.reply('there was an error trying to execute that command!');
         }
     });
 
-    // Activity
+    // Cycle through an Activity Combination found in data/quotes.json
     const quote = quotes[Math.floor(Math.random() * Math.floor(quotes.length))];
     await client.user.setActivity(quote.quote, {type: quote.type})
         .then(precence => console.log(`switched activity to ${precence.activities[0].name}`));
@@ -136,4 +144,5 @@ async function connect(client) {
     }, 10 * 60 * 1000);
 }
 
+// Start the Bot
 connect(client).then(console.log('Starting bot...'));

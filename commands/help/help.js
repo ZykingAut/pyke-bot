@@ -12,7 +12,6 @@ module.exports = {
         const { commands } = msg.client;
         const fun = msg.client.funCommands;
         const mod = msg.client.modCommands;
-        const music = msg.client.musicCommands;
         const util = msg.client.utilCommands;
 
         // Setting Variables
@@ -22,7 +21,6 @@ module.exports = {
         const commandNames = [];
         const funCommandNames = [];
         const modCommandNames = [];
-        const musicCommandNames = [];
         const utilCommandNames = [];
 
         if (!args.length) {
@@ -31,7 +29,6 @@ module.exports = {
             commandNames.push(commands.map(command => command.name).join('\n'));
             funCommandNames.push(fun.map(command => command.name).join('\n'));
             modCommandNames.push(mod.map(command => command.name).join('\n'));
-            musicCommandNames.push(music.map(command => command.name).join('\n'));
             utilCommandNames.push(util.map(command => command.name).join('\n'));
 
             // Embed Header etc
