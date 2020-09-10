@@ -10,9 +10,6 @@ module.exports = {
     execute(msg, args) {
         // Fetching Information
         const { commands } = msg.client;
-        const fun = msg.client.funCommands;
-        const mod = msg.client.modCommands;
-        const util = msg.client.utilCommands;
 
         // Setting Variables
         const embed = new MessageEmbed();
