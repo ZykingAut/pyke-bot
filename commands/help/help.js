@@ -10,6 +10,10 @@ module.exports = {
     execute(msg, args) {
         // Fetching Information
         const { commands } = msg.client;
+        const fun = msg.client.funCommands;
+        const mod = msg.client.modCommands;
+        const util = msg.client.utilCommands;
+        const esports = msg.client.esportCommands;
 
         // Setting Variables
         const embed = new MessageEmbed();
@@ -19,6 +23,7 @@ module.exports = {
         const funCommandNames = [];
         const modCommandNames = [];
         const utilCommandNames = [];
+        const esportsCommandNames = [];
 
         if (!args.length) {
 
@@ -27,6 +32,7 @@ module.exports = {
             funCommandNames.push(fun.map(command => command.name).join('\n'));
             modCommandNames.push(mod.map(command => command.name).join('\n'));
             utilCommandNames.push(util.map(command => command.name).join('\n'));
+            esportsCommandNames.push(esports.map(command => command.name).join('\n'));
 
             // Embed Header etc
             embed.setTitle('Help');
@@ -43,6 +49,7 @@ module.exports = {
             );
             embed.addFields(
                 { name: 'Utility', value: utilCommandNames, inline: true },
+                { name: 'Esports', value: esportsCommandNames, inline: true},
                 { name: '\u200b', value: '\u200b', inline: true }
             );
 
