@@ -2,6 +2,7 @@ const fs = require('fs');
 const discord = require('discord.js');
 const quotes = require('./data/quotes.json');
 const Keyv = require('keyv');
+const getFiles = require('node-recursive-directory');
 require('dotenv').config({ path: __dirname + '/.env' });
 const client = new discord.Client();
 
@@ -21,32 +22,16 @@ const prefixes = new Keyv('sqlite://./data/guilds.sqlite', {
 prefixes.on('error', err => console.error('Keyv connection error:', err));
 
 // Command Handler
-const helpCommands = fs.readdirSync('./commands/help').filter(file => file.endsWith('.js'));
-    for (const file of helpCommands) {
-        const command = require(`./commands/help/${file}`);
-        client.commands.set(command.name, command);
+async function loadCommands() {
+    const commandFiles = await getFiles('./commands', true);
+    for (const i in commandFiles) {
+        if (commandFiles[i].filename.endsWith('.js')) {
+            const command = require(commandFiles[i].fullpath);
+            client.commands.set(command.name, command);
+        }
     }
+}
 
-const modCommands = fs.readdirSync('./commands/mod').filter(file => file.endsWith('.js'));
-    for (const file of modCommands) {
-        const command = require(`./commands/mod/${file}`);
-        client.modCommands.set(command.name, command);
-        client.commands.set(command.name, command);
-    }
-
-const esportCommands = fs.readdirSync('./commands/esports').filter(file => file.endsWith('.js'));
-    for (const file of esportCommands) {
-        const command = require(`./commands/esports/${file}`);
-        client.esportCommands.set(command.name, command);
-        client.commands.set(command.name, command);
-    }
-
-const utilCommands = fs.readdirSync('./commands/util').filter(file => file.endsWith('.js'));
-    for (const file of utilCommands) {
-        const command = require(`./commands/util/${file}`);
-        client.utilCommands.set(command.name, command);
-        client.commands.set(command.name, command);
-    }
 
 // Starting Bot
 async function connect(client) {
@@ -68,7 +53,6 @@ async function connect(client) {
                 prefix = await prefixes.get(msg.guild.id)
             }
         }
-        console.log(prefix);
         if (!msg.content.startsWith(prefix)) return;
         args = msg.content.slice(prefix.length).split(/ +/);
         const commandName = args.shift().toLowerCase();
@@ -136,4 +120,5 @@ async function connect(client) {
 }
 
 // Start the Bot
+loadCommands().then(console.log('Loading Commands'));
 connect(client).then(console.log('Starting bot...'));
