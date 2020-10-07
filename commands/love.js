@@ -1,5 +1,6 @@
 module.exports = {
     name: 'love',
+    group: 'fun',
     description: 'Find out the love between two people!',
     usage: '<@user1> <@user2>',
     execute(msg) {

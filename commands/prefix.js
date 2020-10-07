@@ -1,5 +1,6 @@
 module.exports = {
     name: 'prefix',
+    group: 'util',
     description: 'Command to show or change the prefix of the guild.',
     usage: '(<prefix>)',
     guildOnly: true,

@@ -1,5 +1,6 @@
 module.exports = {
     name: 'avatar',
+    group: 'util',
     description: 'Command to get the avatar of a user',
     aliases: ['icon', 'pfp'],
     usage: '<user>',

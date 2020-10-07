@@ -6,10 +6,6 @@ require('dotenv').config({ path: __dirname + '/.env' });
 const client = new discord.Client();
 
 //Collections
-client.funCommands = new discord.Collection();
-client.modCommands = new discord.Collection();
-client.utilCommands = new discord.Collection();
-client.esportCommands = new discord.Collection();
 client.commands = new discord.Collection();
 const cooldowns = new discord.Collection();
 
@@ -21,30 +17,9 @@ const prefixes = new Keyv('sqlite://./data/guilds.sqlite', {
 prefixes.on('error', err => console.error('Keyv connection error:', err));
 
 // Command Handler
-const helpCommands = fs.readdirSync('./commands/help').filter(file => file.endsWith('.js'));
-    for (const file of helpCommands) {
+const commands = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+    for (const file of commands) {
         const command = require(`./commands/help/${file}`);
-        client.commands.set(command.name, command);
-    }
-
-const modCommands = fs.readdirSync('./commands/mod').filter(file => file.endsWith('.js'));
-    for (const file of modCommands) {
-        const command = require(`./commands/mod/${file}`);
-        client.modCommands.set(command.name, command);
-        client.commands.set(command.name, command);
-    }
-
-const esportCommands = fs.readdirSync('./commands/esports').filter(file => file.endsWith('.js'));
-    for (const file of esportCommands) {
-        const command = require(`./commands/esports/${file}`);
-        client.esportCommands.set(command.name, command);
-        client.commands.set(command.name, command);
-    }
-
-const utilCommands = fs.readdirSync('./commands/util').filter(file => file.endsWith('.js'));
-    for (const file of utilCommands) {
-        const command = require(`./commands/util/${file}`);
-        client.utilCommands.set(command.name, command);
         client.commands.set(command.name, command);
     }
 
@@ -65,13 +40,13 @@ async function connect(client) {
         let args;
         if (msg.guild) { // Check if the message was posted in a guild
             if (await prefixes.get(msg.guild.id)) { // Check if the guild the message was send has a set prefix
-                prefix = await prefixes.get(msg.guild.id)
+                prefix = await prefixes.get(msg.guild.id);
             }
         }
-        console.log(prefix);
         if (!msg.content.startsWith(prefix)) return;
         args = msg.content.slice(prefix.length).split(/ +/);
         const commandName = args.shift().toLowerCase();
+        if (commandName === "") return;
 
         const command = client.commands.get(commandName) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
         if (!command) return;
@@ -84,7 +59,6 @@ async function connect(client) {
             }
             return msg.channel.send(reply);
         }
-
         // Check for Channelproperties and Commandproperties
         if (command.guildOnly && msg.channel.type !== 'text') {
             return msg.reply('I can\'t execute that command inside DMs!')
@@ -119,7 +93,7 @@ async function connect(client) {
         try {
             command.execute(msg, args, client, prefixes);
         } catch (error) {
-            console.log(error);
+            console.error(error);
             msg.reply('there was an error trying to execute that command!');
         }
     });

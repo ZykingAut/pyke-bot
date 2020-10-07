@@ -1,5 +1,6 @@
 module.exports = {
     name: 'delete',
+    group: 'util',
     description: 'Command to delete messages',
     aliases: ['remove'],
     args: true,

@@ -1,5 +1,6 @@
 module.exports = {
     name: 'quiz',
+    group: 'fun',
     description: 'Command to setup a quiz.',
     cooldown: 5,
     guildOnly: true,

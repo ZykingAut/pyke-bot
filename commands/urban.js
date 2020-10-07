@@ -4,12 +4,13 @@ const querystring = require('querystring');
 
 module.exports = {
     name: 'urban',
+    group: 'fun',
     description: 'Command to show the urban dictionary of a term.',
     args: true,
     usage: '<term>',
     async execute(msg, args) {
         const query = querystring.stringify({ term: args.join(' ') });
-        const { list } = await fetch(`https://api.urbandictionary.com/v0/define?${query}`).then(response => response.json());
+        const { list } = await fetch(`https://api.urbandictionary.com/v0/define?${query}`);
         if (!list.length) {
             return msg.channel.send(`No results found for **${args.join(' ')}**.`);
         }

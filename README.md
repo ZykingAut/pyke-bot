@@ -8,4 +8,4 @@ but due to school there won't be scheduled updates.
 ## Further Information
 A fully detailed Command list can always be found [here](insert commandslink).  
 We also have a Discord server that can be found [here](inser discordlink).  
-If you want to know anything else about this bot, my Discord tag is Zyking#0001.  
+If you want to know anything else about this bot, my Discord tag is Zyking#0001.
