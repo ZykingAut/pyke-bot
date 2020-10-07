@@ -104,5 +104,5 @@ dist
 # TernJS port file
 .tern-port
 
-#sqlite
-data/guilds.sqlite
+# Sqlite
+./data/guilds.sqlite

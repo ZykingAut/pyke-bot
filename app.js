@@ -2,6 +2,7 @@ const fs = require('fs');
 const discord = require('discord.js');
 const quotes = require('./data/quotes.json');
 const Keyv = require('keyv');
+const getFiles = require('node-recursive-directory');
 require('dotenv').config({ path: __dirname + '/.env' });
 const client = new discord.Client();
 
@@ -17,11 +18,15 @@ const prefixes = new Keyv('sqlite://./data/guilds.sqlite', {
 prefixes.on('error', err => console.error('Keyv connection error:', err));
 
 // Command Handler
-const commands = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
-    for (const file of commands) {
-        const command = require(`./commands/help/${file}`);
-        client.commands.set(command.name, command);
+async function loadCommands() {
+    const commandFiles = await getFiles('./commands', true);
+    for (const i in commandFiles) {
+        if (commandFiles[i].filename.endsWith('.js')) {
+            const command = require(commandFiles[i].fullpath);
+            client.commands.set(command.name, command);
+        }
     }
+}
 
 // Starting Bot
 async function connect(client) {
@@ -110,4 +115,5 @@ async function connect(client) {
 }
 
 // Start the Bot
+loadCommands().then(console.log('Loading Commands'));
 connect(client).then(console.log('Starting bot...'));
