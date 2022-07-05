@@ -7,7 +7,7 @@
   },
   "main": "app.js",
   "dependencies": {
-    "@discordjs/opus": "^0.1.0",
+    "@discordjs/opus": "^0.8.0",
     "@keyv/sqlite": "^2.0.2",
     "body-parser": "^1.19.0",
     "canvas": "^2.6.1",
